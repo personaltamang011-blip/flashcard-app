@@ -22,8 +22,12 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+<<<<<<< HEAD
     "vite": "npm:rolldown-vite@7.2.5",
     "vite-plugin-pwa": "^1.2.0"
+=======
+    "vite": "npm:rolldown-vite@7.2.5"
+>>>>>>> b6117e9ef1f593f5916034279372bfbc7268082a
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"

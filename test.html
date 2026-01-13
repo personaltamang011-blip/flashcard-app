@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard Flip App</title>
+  <style>
+    /* --- Body & Container --- */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74abe2, #5563de);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app-container {
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+    }
+
+    h1 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    /* --- Card Perspective Container --- */
+    .card-container {
+      perspective: 1500px; /* essential for 3D flip */
+      margin-bottom: 20px;
+    }
+
+    /* --- Flashcard Styles --- */
+    .flashcard {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .flashcard.flip {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard .front,
+    .flashcard .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      padding: 20px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .flashcard .front {
+      background: #ffffff;
+      color: #333;
+    }
+
+    .flashcard .back {
+      background: #5563de;
+      color: #fff;
+      transform: rotateY(180deg);
+    }
+
+    /* --- Buttons --- */
+    .buttons {
+      display: flex;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #ffb74d;
+      color: #333;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin: 0 5px;
+    }
+
+    button:hover {
+      background: #ffa726;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 480px) {
+      .flashcard {
+        height: 200px;
+      }
+
+      .flashcard .front, .flashcard .back {
+        font-size: 1rem;
+        padding: 15px;
+      }
+
+      button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <h1>Flashcard Flip App</h1>
+    <div class="card-container">
+      <div class="flashcard" id="flashcard">
+        <div class="front" id="question"></div>
+        <div class="back" id="answer"></div>
+      </div>
+    </div>
+    <div class="buttons">
+      <button id="next-card">Next Card</button>
+    </div>
+  </div>
+
+  <script>
+    // Flashcards data
+    const flashcards = [
+      { question: "What is the capital of Nepal?", answer: "Kathmandu" },
+      { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
+      { question: "What is 5 + 7?", answer: "12" },
+      { question: "Which planet is known as the Red Planet?", answer: "Mars" },
+      { question: "What is H₂O commonly known as?", answer: "Water" }
+    ];
+
+    let currentIndex = 0;
+    const flashcard = document.getElementById('flashcard');
+    const question = document.getElementById('question');
+    const answer = document.getElementById('answer');
+
+    // Shuffle cards for variety
+    function shuffleCards() {
+      flashcards.sort(() => Math.random() - 0.5);
+    }
+
+    // Show card content
+    function showCard(index) {
+      const card = flashcards[index];
+      question.textContent = card.question;
+      answer.textContent = card.answer;
+      flashcard.classList.remove('flip'); // Reset flip when showing new card
+    }
+
+    // Flip card on click
+    flashcard.addEventListener('click', () => {
+      flashcard.classList.toggle('flip');
+    });
+
+    // Next card button
+    document.getElementById('next-card').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % flashcards.length;
+      showCard(currentIndex);
+    });
+
+    // Initialize
+    shuffleCards();
+    showCard(currentIndex);
+  </script>
+</body>
+</html>

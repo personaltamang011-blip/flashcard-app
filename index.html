@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcard Flip App</title>
+  <title>Flashcard Flip App with Progress + Controls</title>
   <style>
     /* --- Body & Container --- */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #74abe2, #5563de);
+      background: linear-gradient(135deg, #8e9caa, #6e718d);
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -24,14 +24,37 @@
 
     h1 {
       color: #fff;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-weight: 600;
+    }
+
+    /* --- Progress Counter and Bar --- */
+    .progress-text {
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .progress-container {
+      width: 100%;
+      background: rgba(255,255,255,0.3);
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #4dff56;
+      transition: width 0.5s ease;
     }
 
     /* --- Card Perspective Container --- */
     .card-container {
-      perspective: 1500px; /* essential for 3D flip */
-      margin-bottom: 20px;
+      perspective: 1500px;
+      margin-bottom: 25px;
     }
 
     /* --- Flashcard Styles --- */
@@ -67,36 +90,37 @@
     }
 
     .flashcard .front {
-      background: #ffffff;
+      background: #aca1a1;
       color: #333;
     }
 
     .flashcard .back {
-      background: #5563de;
-      color: #fff;
+      background: #adaebb;
+      color: #000000;
       transform: rotateY(180deg);
     }
 
     /* --- Buttons --- */
     .buttons {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     button {
-      padding: 10px 20px;
+      flex: 1;
+      padding: 10px 0;
       border: none;
-      background: #ffb74d;
+      background: #75e718;
       color: #333;
       border-radius: 10px;
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s ease;
-      margin: 0 5px;
     }
 
     button:hover {
-      background: #ffa726;
+      background: #cfbb48;
     }
 
     /* --- Responsive --- */
@@ -111,30 +135,42 @@
       }
 
       button {
-        padding: 8px 15px;
         font-size: 0.9rem;
+        padding: 8px 0;
       }
     }
   </style>
 </head>
 <body>
   <div class="app-container">
-    <h1>Flashcard Flip App</h1>
+    <h1>SM WordMeaning App</h1>
+
+    <!-- Progress Text + Bar -->
+    <div class="progress-text" id="progress-text">Card 1 / 5</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Flashcard -->
     <div class="card-container">
       <div class="flashcard" id="flashcard">
         <div class="front" id="question"></div>
         <div class="back" id="answer"></div>
       </div>
     </div>
+
+    <!-- Buttons -->
     <div class="buttons">
-      <button id="next-card">Next Card</button>
+      <button id="prev-card">Previous</button>
+      <button id="restart">Restart</button>
+      <button id="next-card">Next</button>
     </div>
   </div>
 
   <script>
     // Flashcards data
     const flashcards = [
-      { question: "What is the capital of Nepal?", answer: "Kathmandu" },
+      { question: "What is the meaning of Millennial in Nepali?", answer: "सहस्राब्दी" },
       { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
       { question: "What is 5 + 7?", answer: "12" },
       { question: "Which planet is known as the Red Planet?", answer: "Mars" },
@@ -145,10 +181,21 @@
     const flashcard = document.getElementById('flashcard');
     const question = document.getElementById('question');
     const answer = document.getElementById('answer');
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
 
     // Shuffle cards for variety
     function shuffleCards() {
       flashcards.sort(() => Math.random() - 0.5);
+    }
+
+    // Update progress display
+    function updateProgress() {
+      const total = flashcards.length;
+      const current = currentIndex + 1;
+      const percentage = (current / total) * 100;
+      progressText.textContent = `Card ${current} / ${total}`;
+      progressBar.style.width = `${percentage}%`;
     }
 
     // Show card content
@@ -156,7 +203,8 @@
       const card = flashcards[index];
       question.textContent = card.question;
       answer.textContent = card.answer;
-      flashcard.classList.remove('flip'); // Reset flip when showing new card
+      flashcard.classList.remove('flip');
+      updateProgress();
     }
 
     // Flip card on click
@@ -167,6 +215,19 @@
     // Next card button
     document.getElementById('next-card').addEventListener('click', () => {
       currentIndex = (currentIndex + 1) % flashcards.length;
+      showCard(currentIndex);
+    });
+
+    // Previous card button
+    document.getElementById('prev-card').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
+      showCard(currentIndex);
+    });
+
+    // Restart button
+    document.getElementById('restart').addEventListener('click', () => {
+      currentIndex = 0;
+      shuffleCards();
       showCard(currentIndex);
     });
 
